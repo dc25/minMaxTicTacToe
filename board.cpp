@@ -33,6 +33,34 @@ public:
         return totalMoveCount == 9;
     }
 
+    bool occupied(int row, int column) const
+    {
+        return 0 != grid[row*3 + column];
+    }
+
+    int getWinner() const
+    {
+        for (auto i = 0; i < 3; ++i)
+        {
+            if (abs(rowCount[i]) == 3)
+            {
+                return sgn(rowCount[i]);
+            }
+            if (abs(columnCount[i]) == 3)
+            {
+                return sgn(columnCount[i]);
+            }
+        }
+
+        if (abs(leftDiagonalCount)==3)
+            return sgn(leftDiagonalCount);
+
+        if (abs(rightDiagonalCount) == 3)
+            return sgn(rightDiagonalCount);
+
+        return 0;
+    }
+        
     void display() const
     {
         cout << "  1 2 3\n";
@@ -75,11 +103,6 @@ public:
         }
     }
 
-    bool occupied(int row, int column) const
-    {
-        return 0 != grid[row*3 + column];
-    }
-
     void makeMove(int row, int column, int moveValue)
     {
         grid[row*3 + column] = moveValue;
@@ -103,7 +126,7 @@ public:
 
     int max()
     {
-        auto winner = getWinner();  // -1 or 1
+        auto winner = getWinner(); // HUMAN(-1) or COMPUTER(1) or none(0)
         if (winner)
         {
             return winner;
@@ -133,7 +156,7 @@ public:
 
     int min()
     {
-        auto winner = getWinner();  // -1 or 1
+        auto winner = getWinner();  // HUMAN(-1) or COMPUTER(1) or none(0)
         if (winner)
         {
             return winner;
@@ -161,25 +184,6 @@ public:
         return res;
     }
 
-    void humanMove()
-    {
-        while (true) {
-            string rc;
-            getline(cin, rc);
-            auto row = rc[0] - 'A';
-            auto column = rc[1] - '1';
-            if (occupied(row, column))
-            {
-                cout << "Already occupied." << endl;
-            }
-            else
-            {
-                makeMove(row, column, HUMAN);
-                break;
-            }
-        }
-    }
-
     void computerMove()
     {
         auto bestMove = -1;
@@ -202,29 +206,25 @@ public:
         makeMove(bestMove, COMPUTER);
     }
 
-    int getWinner() const
+    void humanMove()
     {
-        for (auto i = 0; i < 3; ++i)
-        {
-            if (abs(rowCount[i]) == 3)
+        while (true) {
+            string rc;
+            getline(cin, rc);
+            auto row = rc[0] - 'A';
+            auto column = rc[1] - '1';
+            if (occupied(row, column))
             {
-                return sgn(rowCount[i]);
+                cout << "Already occupied." << endl;
             }
-            if (abs(columnCount[i]) == 3)
+            else
             {
-                return sgn(columnCount[i]);
+                makeMove(row, column, HUMAN);
+                break;
             }
         }
-
-        if (abs(leftDiagonalCount)==3)
-            return sgn(leftDiagonalCount);
-
-        if (abs(rightDiagonalCount) == 3)
-            return sgn(rightDiagonalCount);
-
-        return 0;
     }
-        
+
 private:
     vector<int> grid;
     vector<int> rowCount;
