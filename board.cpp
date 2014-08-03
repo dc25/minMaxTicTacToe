@@ -237,6 +237,7 @@ private:
 int main()
 {
     game G;
+    G.display();
     while (!G.getWinner() && !G.boardFull())
     {
         G.humanMove();
